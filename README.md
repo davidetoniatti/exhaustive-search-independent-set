@@ -1,96 +1,112 @@
-# Exhaustive Search for Independent Set
+# Maximum Independent Set Solver
 
-This repository contains a Python implementation of exhaustive search algorithms for finding independent sets in graphs.
+This repository provides implementations of algorithms to find an **Independent Set** in a graph.  
+An **Independent Set** is a set of vertices in a graph, no two of which are adjacent. The problem of finding the **Maximum Independent Set (MIS)** is NP-hard, so this project implements both **exact** and **approximate** methods.
 
-## Table of Contents
+## 📂 Project Structure
 
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Overview
-
-An **independent set** in a graph is a set of vertices with no two adjacent. Finding the largest independent set is a classic problem in combinatorial optimization and graph theory, known to be NP-hard.
-
-This project provides a Python implementation to enumerate all independent sets or find the maximum independent set using exhaustive (brute-force) search methods. It is intended for educational and experimental purposes.
-
-## Features
-
-- Enumerate all independent sets in a given graph
-- Find the maximum (largest) independent set
-- Simple API for custom graphs
-- Pure Python implementation for easy understanding and modification
-
-## Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/davidetoniatti/exhaustive-search-independent-set.git
-   cd exhaustive-search-independent-set
-   ```
-
-2. (Optional) Create a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. Install dependencies (if any):
-   ```bash
-   pip install -r requirements.txt
-   ```
-   > If there is no `requirements.txt`, all dependencies are included in the standard library.
-
-## Usage
-
-You can use the main script to find independent sets in a graph. Example usage:
-
-```python
-from <your_module> import find_maximum_independent_set
-
-# Define your graph (adjacency list or edge list)
-graph = {
-    0: [1, 2],
-    1: [0, 2],
-    2: [0, 1, 3],
-    3: [2]
-}
-
-max_set = find_maximum_independent_set(graph)
-print("Maximum Independent Set:", max_set)
+```
+src/
+│── exaustive_search_is.py   # Branch-and-Bound exhaustive search algorithm
+│── greedy_is.py             # Greedy heuristic algorithm
+│── utils.py                 # Utility functions (graph I/O, helpers)
 ```
 
-Replace `<your_module>` with the actual module name from the repository.
+## 🚀 Features
 
-Alternatively, you can run the script directly:
+- **Exact approach (Branch-and-Bound):**
+  - Implemented in `exaustive_search_is.py`.
+  - Tries all possibilities with pruning to find the maximum independent set.
+
+- **Greedy heuristic:**
+  - Implemented in `greedy_is.py`.
+  - Iteratively selects the node with the smallest degree and removes its neighbors.
+  - Fast, but not guaranteed to be optimal.
+
+- **Utility functions (`utils.py`):**
+  - Graph generation from file or randomly.
+  - Independent set verification.
+  - Write results to file.
+  - Helper to get the node with minimum degree.
+
+## 📖 Usage
+
+### 1. Prepare Input Graph
+Graphs are read from an input file in the following format:
+
+```
+n m
+u1 v1
+u2 v2
+...
+um vm
+```
+
+Where:
+- `n` = number of nodes  
+- `m` = number of edges  
+- Each of the next `m` lines represents an undirected edge `(u, v)`.
+
+You can also generate a random graph with `random_graph_generator(n, p)` from `utils.py`.  
+This will create a file called `input.txt`.
+
+### 2. Run the Algorithms
+
+**Exhaustive Search (Branch-and-Bound):**
+```bash
+python3 src/exaustive_search_is.py input.txt
+```
+
+**Greedy Heuristic:**
+```bash
+python3 src/greedy_is.py input.txt
+```
+
+### 3. Output
+Both algorithms write their results to `output.txt` in the format:
+
+```
+k
+v1
+v2
+...
+vk
+```
+
+Where `k` is the size of the independent set, followed by the list of nodes.
+
+## 🛠 Dependencies
+- Python 3.7+
+- [NetworkX](https://networkx.org/) for graph operations.
+
+Install dependencies with:
 
 ```bash
-python main.py
+pip install networkx
 ```
 
-Check the code comments and function docstrings for more details.
+## 📊 Example
 
-## Project Structure
-
+**Input (`input.txt`):**
 ```
-exhaustive-search-independent-set/
-├── main.py
-├── utils.py
-├── README.md
-└── (other source files)
+4 3
+0 1
+1 2
+2 3
 ```
 
-- `main.py`: Entry point, example usage
-- `utils.py`: Utility functions for graph handling
+**Run greedy:**
+```bash
+python3 src/greedy_is.py input.txt
+```
 
-## Contributing
+**Output (`output.txt`):**
+```
+2
+0
+2
+```
 
-Contributions, bug reports, and feature requests are welcome! Please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
+## 📌 Notes
+- The exhaustive algorithm guarantees the maximum independent set but is exponential in complexity — only feasible for small graphs.
+- The greedy algorithm runs fast and works on larger graphs, but the result is not always optimal.
